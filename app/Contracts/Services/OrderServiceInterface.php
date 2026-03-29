@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Contracts\Services;
 
 use App\DTO\StoreOrderDTO;
 use App\Models\Order;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface OrderServiceInterface
 {
     public function getOrders(): LengthAwarePaginator;
-    public function getOrder(string $orderId): ?Order;
-    public function storeOrder(StoreOrderDTO $DTO): Order;
 
+    public function getOrder(int $orderId): ?Order;
+
+    public function storeOrder(StoreOrderDTO $DTO): Order;
 }

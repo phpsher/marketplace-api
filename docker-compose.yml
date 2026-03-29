@@ -1,7 +1,6 @@
 services:
-    # image project
     app:
-        container_name: php-app
+        container_name: marketplace-app
         build:
             context: docker/php
             dockerfile: Dockerfile
@@ -12,9 +11,8 @@ services:
         depends_on:
             - redis
         networks:
-            - laravel
+            - app-net
 
-    # nginx
     nginx:
         image: nginx:alpine
         restart: unless-stopped
@@ -24,45 +22,27 @@ services:
             - ./:/var/www
             - ./docker/nginx/:/etc/nginx/conf.d/
         networks:
-            - laravel
+            - app-net
 
-    # db mysql
     db:
-        image: mysql:5.7.22
+        image: postgres:15
         restart: unless-stopped
         environment:
-            MYSQL_DATABASE: ${DB_DATABASE:-laravel}
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
-            MYSQL_PASSWORD: ${DB_PASSWORD:-userpass}
-            MYSQL_USER: ${DB_USERNAME:-username}
+            POSTGRES_DB: ${DB_DATABASE:-postgres}
+            POSTGRES_USER: ${DB_USERNAME:-postgres}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
         volumes:
-            - ./.docker/mysql/dbdata:/var/lib/mysql
+            - ./docker/postgres/data:/var/lib/postgresql/data
         ports:
-            - "3306:3306"
+            - "5432:5432"
         networks:
-            - laravel
+            - app-net
 
-    # PHPMyAdmin
-    phpmyadmin:
-        image: phpmyadmin/phpmyadmin
-        restart: unless-stopped
-        ports:
-            - "80:80"
-        environment:
-            PMA_HOST: db
-            PMA_PORT: 3306
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-userpass}
-        networks:
-            - laravel
-
-    # redis
     redis:
-        container_name: redis-db
         image: redis:latest
-
         networks:
-            - laravel
+            - app-net
 
 networks:
-    laravel:
+    app-net:
         driver: bridge

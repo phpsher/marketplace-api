@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Contracts\Services;
+declare(strict_types=1);
 
+namespace App\Contracts\Services;
 
 use App\DTO\LoginUserDTO;
 use App\DTO\RegisterUserDTO;
