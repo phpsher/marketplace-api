@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
 class GenerateJwtToken extends Command
 {
     /**
@@ -28,7 +31,7 @@ class GenerateJwtToken extends Command
      */
     public function handle(): void
     {
-        $email = $this->argument('email') ?? 'admin@example.com';
+        $email    = $this->argument('email')    ?? 'admin@example.com';
         $password = $this->argument('password') ?? 'admin123';
 
         try {
@@ -40,11 +43,11 @@ class GenerateJwtToken extends Command
             );
 
             // Create admin user
-            $user = new User();
-            $user->email = $email;
-            $user->name = 'Admin';
+            $user           = new User();
+            $user->email    = $email;
+            $user->name     = 'Admin';
             $user->password = Hash::make($password);
-            $user->role_id = $role->id;
+            $user->role_id  = $role->id;
             $user->save();
 
             // Generate new token

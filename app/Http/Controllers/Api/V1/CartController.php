@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Contracts\Services\CartServiceInterface;
@@ -20,11 +22,9 @@ class CartController extends Controller
 
     public function __construct(
         protected CartServiceInterface $cartService
-    )
-    {
+    ) {
         $this->cartKey = 'cart: ' . Auth::id();
     }
-
 
     public function index(): JsonResponse
     {
@@ -40,8 +40,8 @@ class CartController extends Controller
     {
         $products = $this->cartService->addProductToCart(
             new AddProductToCartDTO(
-                productId: $request->input('product_id'),
-                quantity: $request->input('quantity'),
+                productId: (int)$request->input('product_id'),
+                quantity: (int)$request->input('quantity'),
                 cartKey: $this->cartKey
             )
         );
@@ -55,13 +55,12 @@ class CartController extends Controller
         );
     }
 
-
     public function destroy(DestroyProductFromCartRequest $request): JsonResponse
     {
         $this->cartService->deleteProductFromCart(
             new DestroyProductFromCartDTO(
-                productId: $request->input('product_id'),
-                quantity: $request->input('quantity'),
+                productId: (int)$request->input('product_id'),
+                quantity: (int)$request->input('quantity'),
                 cartKey: $this->cartKey,
             )
         );

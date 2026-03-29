@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Contracts\Services\CartServiceInterface;
@@ -10,19 +12,17 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
 {
     use ResponseTrait;
 
-    private readonly string $cartKey;
-
     public function __construct(
         private readonly CartServiceInterface  $cartService,
         private readonly OrderServiceInterface $orderService,
-    )
-    {
-        $this->cartKey = 'cart: ' . Auth::id();
+    ) {
     }
 
     public function index(): JsonResponse
@@ -34,16 +34,22 @@ class OrderController extends Controller
         );
     }
 
-    public function show(string $orderId): JsonResponse
+    public function show(int $orderId): JsonResponse
     {
         $order = $this->orderService->getOrder($orderId);
+
+        if (Gate::denies('show', $order)) {
+            return $this->error(
+                message: 'You do not have permission to view this order.',
+                statusCode: Response::HTTP_FORBIDDEN
+            );
+        }
 
         return $this->success(
             data: $order
         );
     }
 
-    // Метод для создания заказа
     public function store(StoreOrderRequest $request): JsonResponse
     {
         $order = $this->orderService->storeOrder(
@@ -56,7 +62,7 @@ class OrderController extends Controller
         return $this->success(
             message: 'Order created',
             data: [
-                'order' => $order
+                'order' => $order,
             ]
         );
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Contracts\Services\AuthServiceInterface;
@@ -11,15 +13,13 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 
-
 class AuthController extends Controller
 {
     use ResponseTrait;
 
     public function __construct(
         protected AuthServiceInterface $authService
-    )
-    {
+    ) {
     }
 
     public function register(RegisterUserRequest $request): JsonResponse
@@ -36,8 +36,8 @@ class AuthController extends Controller
         return $this->success(
             message: 'Successfully register',
             data: [
-                'user' => $user['user'],
-                'token' => $user['token']
+                'user'  => $user['user'],
+                'token' => $user['token'],
             ],
         );
     }
@@ -54,8 +54,8 @@ class AuthController extends Controller
         return $this->success(
             message: 'Successfully login',
             data: [
-                'user' => $user['user'],
-                'token' => $user['token']
+                'user'  => $user['user'],
+                'token' => $user['token'],
             ],
         );
     }

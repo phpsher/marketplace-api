@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -22,10 +24,10 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|min:2|max:65',
+            'title'       => 'required|string|min:2|max:65',
             'description' => 'required|string|min:10|max:300',
-            'price' => 'required|integer',
-            'image' => 'required|image|mimes:jpeg,jpg,png|max:4096'
+            'price'       => 'required|integer',
+            'image'       => 'required|image|mimes:jpeg,jpg,png|max:4096',
         ];
     }
 }

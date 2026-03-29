@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Api\V1\AdminController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CartController;
@@ -59,13 +61,10 @@ Route::prefix('v1')
 
         // Test routes
         Route::get('/protected-route', function () {
-            return response()->json(['message' => 'Protected route accessed']);
+            return \response()->json(['message' => 'Protected route accessed']);
         })->middleware('auth:sanctum');
 
         Route::get('/protected-route-admin', function () {
-            return response()->json(['message' => 'Protected route accessed']);
+            return \response()->json(['message' => 'Protected route accessed']);
         })->middleware(AdminMiddleware::class);
     });
-
-
-

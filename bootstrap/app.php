@@ -21,7 +21,6 @@ return Application::configure(basePath: dirname(__DIR__))
             return $request->is('api/*') || $request->expectsJson();
         });
 
-        // Кастомный рендер для API
         $exceptions->renderable(function (Throwable $e, Illuminate\Http\Request $request) {
             if (! $request->is('api/*')) {
                 return null;
@@ -66,15 +65,9 @@ return Application::configure(basePath: dirname(__DIR__))
             ], $status);
         });
 
-        // Логирование
         $exceptions->reportable(function (Throwable $e) {
             Log::error('Exception reported: '.$e->getMessage(), [
                 'exception' => $e,
             ]);
-
-            if (app()->bound(LoggerServiceInterface::class)) {
-                $logger = app(LoggerServiceInterface::class);
-                $logger->log($e->getMessage());
-            }
         });
     })->create();

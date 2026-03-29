@@ -1,45 +1,78 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
-use App\Contracts\Repositories\ProductRepositoryInterface;
 use App\Contracts\Services\ProductServiceInterface;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 readonly class ProductService implements ProductServiceInterface
 {
-    public function __construct(
-        private ProductRepositoryInterface $productRepository
-    )
+    /**
+     * @var int
+     */
+    private int $ttl;
+
+    public function __construct()
     {
+        $this->ttl = 3600 * 24 * 3;
     }
 
-
+    /**
+     * @return LengthAwarePaginator
+     */
     public function getProducts(): LengthAwarePaginator
     {
-        return $this->productRepository->all();
+        return Cache::remember('products:all', $this->ttl, function () {
+            return Product::paginate(10);
+        });
     }
 
-
+    /**
+     * @param int $id
+     * @return Product|null
+     */
     public function getProduct(int $id): ?Product
     {
-        return $this->productRepository->getById($id);
+        return Cache::remember("product:$id", $this->ttl, function () use ($id) {
+            return Product::findOrFail($id);
+        });
     }
 
-    /*    public function storeProduct(array $productData): Product
-        {
-            // TODO...
-            $relativePath = $productData['image']->store('public/products');
+    /**
+     * @param array $ids
+     * @return Collection<int, Product>
+     */
+    public function getProductsByIds(array $ids): Collection
+    {
+        $cacheKey = 'products:by:ids:' . \implode(':', $ids);
 
-            $publicUrl = Storage::url($relativePath);
+        return Cache::remember($cacheKey, $this->ttl, function () use ($ids) {
+            return Product::whereIn('id', $ids)->get()->keyBy('id');
+        });
+    }
 
+    /**
+     * @param array $productData
+     * @return Product
+     */
+    public function storeProduct(array $productData): Product
+    {
+        if (isset($productData['image'])) {
+            $relativePath              = $productData['image']->store('public/products');
             $productData['image_path'] = $relativePath;
+            $productData['image']      = Storage::url($relativePath);
+        }
 
-            $productData['image'] = $publicUrl;
+        $product = Product::create($productData);
 
-            return $this->productRepository->storeProduct($productData);
-        }*/
+        Cache::forget('products:all');
 
+        return $product;
+    }
 }

@@ -1,21 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTO;
 
 class AddProductToCartDTO
 {
-
     /**
-     * @param string $productId
-     * @param string $quantity
+     * @param int $productId
+     * @param int $quantity
      * @param string $cartKey
      */
     public function __construct(
-        public string $productId,
-        public string $quantity,
+        public int $productId,
+        public int $quantity,
         public string $cartKey,
-    )
-    {
+    ) {
     }
 
     /**
@@ -25,8 +25,8 @@ class AddProductToCartDTO
     {
         return [
             'productId' => $this->productId,
-            'quantity' => $this->quantity,
-            'cartKey' => $this->cartKey,
+            'quantity'  => $this->quantity,
+            'cartKey'   => $this->cartKey,
         ];
     }
 }

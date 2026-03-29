@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTO;
 
 class RegisterUserDTO
@@ -13,8 +15,7 @@ class RegisterUserDTO
         public string $name,
         public string $email,
         public string $password,
-    )
-    {
+    ) {
     }
 
     /**
@@ -23,8 +24,8 @@ class RegisterUserDTO
     public function toArray(): array
     {
         return [
-            'name' => $this->name,
-            'email' => $this->email,
+            'name'     => $this->name,
+            'email'    => $this->email,
             'password' => $this->password,
         ];
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -17,10 +19,10 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->sentence(),
+            'title'       => $this->faker->sentence(),
             'description' => $this->faker->paragraph(),
-            'price' => $this->faker->numberBetween(100, 1000),
-            'image' => $this->faker->imageUrl(),
+            'price'       => $this->faker->numberBetween(100, 1000),
+            'image'       => $this->faker->imageUrl(),
         ];
     }
 }

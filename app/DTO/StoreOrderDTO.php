@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTO;
 
 class StoreOrderDTO
 {
     /**
-     * @param string $userId
+     * @param int $userId
      * @param array|null $products
      * @param string|null $totalPrice
      */
     public function __construct(
-        public string  $userId,
+        public int  $userId,
         public ?array  $products = null,
-        public ?string $totalPrice = null,
-    )
-    {
+        public ?float $totalPrice = null,
+    ) {
     }
 
     /**
@@ -22,10 +23,10 @@ class StoreOrderDTO
      */
     public function toArray(): array
     {
-        return array_filter([
+        return \array_filter([
             'user_id'     => $this->userId,
             'products'    => $this->products,
             'total_price' => $this->totalPrice,
-        ], fn($value) => $value !== null);
+        ], fn ($value) => $value !== null);
     }
 }

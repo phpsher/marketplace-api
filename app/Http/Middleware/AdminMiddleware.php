@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use App\Traits\ResponseTrait;
@@ -7,11 +9,11 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use App\Enums\HttpStatus;
 
 class AdminMiddleware
 {
     use ResponseTrait;
+
     /**
      * Handle an incoming request.
      *
@@ -22,7 +24,7 @@ class AdminMiddleware
         if (Auth::user()->role->role !== 'admin') {
             return $this->error(
                 message: 'You are not admin',
-                statusCode: HttpStatus::UNAUTHORIZED->value
+                statusCode: Response::HTTP_UNAUTHORIZED
             );
         }
 

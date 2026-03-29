@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions;
 
 use App\Jobs\SendLogJob;
@@ -15,7 +17,7 @@ class CacheException extends Exception
 
     public function report(): void
     {
-        $exceptionMessage = sprintf(
+        $exceptionMessage = \sprintf(
             "Exception: %s\nFile: %s:%s\nMessage: %s",
             static::class,
             $this->getFile(),

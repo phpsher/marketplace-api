@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -23,9 +25,9 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'products' => 'required|array',
+            'products'              => 'required|array',
             'products.*.product_id' => 'required|exists:products,id',
-            'products.*.quantity' => 'required|integer|min:1',
+            'products.*.quantity'   => 'required|integer|min:1',
         ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Contracts\Services\OrderServiceInterface;
@@ -18,19 +20,18 @@ class AdminController extends Controller
         private readonly ProductServiceInterface    $productService,
         private readonly OrderServiceInterface      $orderService,
         private readonly StatisticsServiceInterface $statisticsService
-    )
-    {
+    ) {
     }
 
     public function dashboard(): JsonResponse
     {
         $allProducts = $this->productService->getProducts();
-        $allOrders = $this->orderService->getOrders();
+        $allOrders   = $this->orderService->getOrders();
 
         return $this->success(
             data: [
                 'products' => $allProducts,
-                'orders' => $allOrders
+                'orders'   => $allOrders,
             ]
         );
     }
@@ -66,11 +67,9 @@ class AdminController extends Controller
     {
         return $this->success(
             data: [
-                'order' => $this->statisticsService->getOrderStatistics(),
+                'order'   => $this->statisticsService->getOrderStatistics(),
                 'product' => $this->statisticsService->getProductStatistics(),
             ]
         );
     }
-
 }
-

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -24,7 +26,7 @@ class DestroyProductFromCartRequest extends FormRequest
     {
         return [
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer',
+            'quantity'   => 'required|integer',
         ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTO;
 
 class LoginUserDTO
@@ -11,8 +13,7 @@ class LoginUserDTO
     public function __construct(
         public string $email,
         public string $password
-    )
-    {
+    ) {
     }
 
     /**
@@ -21,8 +22,8 @@ class LoginUserDTO
     public function toArray(): array
     {
         return [
-            'email' => $this->email,
-            'password' => $this->password
+            'email'    => $this->email,
+            'password' => $this->password,
         ];
     }
 }
