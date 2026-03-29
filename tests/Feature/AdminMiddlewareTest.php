@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use App\Models\Role;
@@ -21,19 +23,19 @@ class AdminMiddlewareTest extends TestCase
     {
         parent::setUp();
 
-        $this->userRole = Role::factory()->create(['role' => 'user']);
+        $this->userRole  = Role::factory()->create(['role' => 'user']);
         $this->adminRole = Role::factory()->create(['role' => 'admin']);
 
         $this->adminUser = User::factory()->create([
-            'role_id' => $this->adminRole->id
+            'role_id' => $this->adminRole->id,
         ]);
 
         $this->user = User::factory()->create([
-            'role_id' => $this->userRole->id
+            'role_id' => $this->userRole->id,
         ]);
 
         $this->adminUser = $this->adminUser->fresh('role');
-        $this->user = $this->user->fresh('role');
+        $this->user      = $this->user->fresh('role');
     }
 
     public function test_admin_can_access_protected_route(): void

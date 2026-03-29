@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use App\Models\Order;
@@ -14,6 +16,8 @@ class OrderControllerTest extends TestCase
 {
     use RefreshDatabase;
     private User $user;
+    private User $user2;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -21,16 +25,21 @@ class OrderControllerTest extends TestCase
         Cache::flush();
 
         $role = Role::factory()->create([
-            'role' => 'user'
+            'role' => 'user',
         ]);
 
         $this->user = User::factory()->create([
-            'role_id' => $role->id
+            'role_id' => $role->id,
+        ]);
+
+        $this->user2 = User::factory()->create([
+            'role_id' => $role->id,
         ]);
 
         $this->actingAs($this->user);
     }
-    public function test_can_user_get_all_orders()
+
+    public function test_can_user_get_own_orders()
     {
         $response = $this->getJson('/api/v1/orders');
 
@@ -60,16 +69,16 @@ class OrderControllerTest extends TestCase
                                 'quantity',
                                 'total_price',
                                 'created_at',
-                                'updated_at'
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                'updated_at',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 
-    public function test_can_user_see_order()
+    public function test_can_user_get_own_order()
     {
         $order = Order::factory()->create([
             'user_id' => $this->user->id,
@@ -102,14 +111,14 @@ class OrderControllerTest extends TestCase
                             'quantity',
                             'total_price',
                             'created_at',
-                            'updated_at'
-                        ]
-                    ]
-                ]]
+                            'updated_at',
+                        ],
+                    ],
+                ]],
         ]);
     }
 
-    public function test_successful_order_creation()
+    public function test_can_user_successful_order_creation()
     {
         $products = Product::factory()->count(2)->create();
 
@@ -121,8 +130,8 @@ class OrderControllerTest extends TestCase
         $response = $this->postJson('/api/v1/orders', [
             'products' => [
                 ['product_id' => $productIds[0], 'quantity' => 2],
-                ['product_id' => $productIds[1], 'quantity' => 3]
-            ]
+                ['product_id' => $productIds[1], 'quantity' => 3],
+            ],
         ]);
 
         $response->assertStatus(200)
@@ -134,13 +143,24 @@ class OrderControllerTest extends TestCase
                         'total_price',
                         'updated_at',
                         'created_at',
-                        'id'
-                    ]
-                ]
+                        'id',
+                    ],
+                ],
             ]);
 
         $this->assertDatabaseHas('orders', [
             'user_id' => $this->user->id,
         ]);
+    }
+
+    public function test_user_cant_get_not_own_order()
+    {
+        $this->actingAs($this->user2);
+
+        $order = Order::factory()->create(['user_id' => $this->user->id]);
+
+        $response = $this->getJson("/api/v1/orders/$order->id");
+
+        $response->assertStatus(403);
     }
 }

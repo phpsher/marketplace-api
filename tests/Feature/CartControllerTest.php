@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use App\Models\Product;
@@ -20,11 +22,11 @@ class CartControllerTest extends TestCase
         Cache::flush();
 
         $role = Role::factory()->create([
-            'role' => 'user'
+            'role' => 'user',
         ]);
 
         $user = User::factory()->create([
-            'role_id' => $role->id
+            'role_id' => $role->id,
         ]);
 
         $this->actingAs($user);
@@ -36,7 +38,7 @@ class CartControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJson([
-            'data' => []
+            'data' => [],
         ]);
     }
 
@@ -46,20 +48,20 @@ class CartControllerTest extends TestCase
 
         $response = $this->postJson('/api/v1/cart', [
             'product_id' => $product->id,
-            'quantity' => 2
+            'quantity'   => 2,
         ]);
 
         $response->assertStatus(200);
         $response->assertJson([
             'message' => 'Successfully added to cart',
-            'data' => [
+            'data'    => [
                 'products' => [
                     [
                         'product_id' => $product->id,
-                        'quantity' => 2
-                    ]
-                ]
-            ]
+                        'quantity'   => 2,
+                    ],
+                ],
+            ],
         ]);
     }
 
@@ -70,12 +72,12 @@ class CartControllerTest extends TestCase
 
         $this->postJson('/api/v1/cart', [
             'product_id' => $product1->id,
-            'quantity' => 2
+            'quantity'   => 2,
         ]);
 
         $response = $this->postJson('/api/v1/cart', [
             'product_id' => $product2->id,
-            'quantity' => 1
+            'quantity'   => 1,
         ]);
 
         $response->assertStatus(200);
@@ -86,10 +88,10 @@ class CartControllerTest extends TestCase
                 'products' => [
                     '*' => [
                         'product_id',
-                        'quantity'
-                    ]
-                ]
-            ]
+                        'quantity',
+                    ],
+                ],
+            ],
         ]);
     }
 
@@ -99,22 +101,22 @@ class CartControllerTest extends TestCase
 
         $this->postJson('/api/v1/cart', [
             'product_id' => $product->id,
-            'quantity' => 2
+            'quantity'   => 2,
         ]);
 
         $response = $this->deleteJson('/api/v1/cart', [
             'product_id' => $product->id,
-            'quantity' => 2
+            'quantity'   => 2,
         ]);
 
         $response->assertStatus(200);
         $response->assertJson([
-            'message' => 'Product removed from cart'
+            'message' => 'Product removed from cart',
         ]);
 
         $cartResponse = $this->getJson('/api/v1/cart');
         $cartResponse->assertJson([
-            'data' => []
+            'data' => [],
         ]);
     }
 }

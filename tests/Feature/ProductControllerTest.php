@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use App\Models\Product;
@@ -17,11 +19,11 @@ class ProductControllerTest extends TestCase
         parent::setUp();
 
         $role = Role::factory()->create([
-            'role' => 'user'
+            'role' => 'user',
         ]);
 
         $user = User::factory()->create([
-            'role_id' => $role->id
+            'role_id' => $role->id,
         ]);
 
         $this->actingAs($user);
@@ -47,11 +49,10 @@ class ProductControllerTest extends TestCase
                     'image',
                     'created_at',
                     'updated_at',
-                ]
-            ]
+                ],
+            ],
         ]);
     }
-
 
     public function test_can_get_single_product()
     {
@@ -69,13 +70,13 @@ class ProductControllerTest extends TestCase
                 'image',
                 'created_at',
                 'updated_at',
-            ]
+            ],
         ]);
     }
 
     public function test_returns_404_if_product_is_not_found()
     {
-        $this->getJson("/api/v1/products/999")
+        $this->getJson('/api/v1/products/999')
             ->assertNotFound();
     }
 }
